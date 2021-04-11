@@ -51,13 +51,40 @@ function getCart($email) {
 
 function deleteItem($id) {
 
-    //TODO complete implementation using the product id
-    alert("cart.js/deleteItem() is not implemented")
+    $.ajax({
+        url: Url+'Cart/'+$id,
+        type: 'delete',
+        dataType: 'json',
+
+        success: function (data) { //on success
+            //reactive HTML that depends on the contents od the returned data
+            alert('Successfully Removed item: ' + $id);
+            location.reload();
+        },
+        error: function (jqXhr, textStatus, errorMessage , data) { //on error, throw an alert
+            alert('Error Removing Item: ' + errorMessage);
+        }
+    });
+
 }
 
 function checkOut() {
 
-    //TODO complete implementation
-    alert("cart.js/checkOut() is not implemented")
+    $.ajax({
+        url: Url+'Cart',
+        type: 'put',
+        dataType: 'json',
+        data: JSON.stringify({"email":email}), //the json is defined here using javascript's dictionary syntax.
+        contentType: 'application/json',
+
+        success: function (data) { //on success
+            //reactive HTML that depends on the contents od the returned data
+            alert('Successfully checked out!');
+            location.reload();
+        },
+        error: function (jqXhr, textStatus, errorMessage) { //on error, throw an alert
+            alert('Error Checking out: ' + errorMessage);
+        }
+    });
 
 }
