@@ -118,6 +118,7 @@ function fetchOneProduct($id) {
 function fetchComments($id) {
     var comment;
     var commentAdd;
+    var score = 0;
 
     $.ajax({
         url: Url+'GetProductComment',
@@ -129,14 +130,6 @@ function fetchComments($id) {
         success: function (data) { //on success
             //reactive HTML that depends on the contents od the returned data
             comment='';
-            comment='<div class="panel panel-default" style="width:800px">\n' +
-                '            <div class="panel-heading">\n' +
-                '                <span class="glyphicon glyphicon-comment"></span>\n' +
-                '                <h3 class="panel-title">\n' +
-                '                    Comments</h3>\n' +
-                '            </div>\n' +
-                '            <div class="panel-body">\n' +
-                '                <ul class="list-group">\n';
             $.each(data['data']['List'], function(i, item) {
                 commentAdd ='                    <li class="list-group-item">\n' +
                     '                        <div class="row">\n' +
@@ -155,10 +148,21 @@ function fetchComments($id) {
                     '                        </div>\n' +
                     '                    </li>';
                 comment=comment+commentAdd;
+                score=score+Number(item['score']);
             });
-            comment=comment+'</ul></div></div>'
+            comment=comment+'</ul></div></div>';
+            //$('#comment-list').html(comment);
+            score=score/data['data']['List'].length;
+            comment_start='<div class="panel panel-default" style="width:800px">\n' +
+                '            <div class="panel-heading">\n' +
+                '                <span class="glyphicon glyphicon-comment"></span>\n' +
+                '                <h3 class="panel-title">\n' +
+                '                    Comments (Avg Score: ' + score.toFixed(1).toString() + ')</h3>\n' +
+                '            </div>\n' +
+                '            <div class="panel-body">\n' +
+                '                <ul class="list-group">\n'; 
+            comment=comment_start+comment;
             $('#comment-list').html(comment);
-
         },
         error: function (data) { //on error, throw an alert
             alert("Error while fetching data.");
