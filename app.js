@@ -1,7 +1,9 @@
 const Url = "http://18.220.85.60/api/"; //this constant holds the base url for the Microservice API, you will append the API route to this value
+let GLOBAL_LIST = [];  //Global list which adds all items for sorting
 
 function fetchProductList() {
 
+    GLOBAL_LIST = [];  //Empty the global list
     jsonObj = [];
     item = {};
     var productList;
@@ -26,6 +28,8 @@ function fetchProductList() {
             productList='';
 
             $.each(data['data']['List'], function(i, item) {
+
+                GLOBAL_LIST.push(item);  //Add each called item to the list
 
                 //this is HTML code that is reactively added to the page, your TODO solutions do not need this.
                 productListAdd = '<div class="col-sm-6 col-md-4 col-lg-3 mt-4" id="product'+item['id']+'">\n' +
@@ -221,6 +225,49 @@ function toShoppingCart(){
     } else {
         alert("Please enter your email at top of page."); //alert user since email is empty
     }
+}
+
+function sortItems(){
+    let sort =$.trim($('#sort_type').val()); //gets which sort should be used
+    var productList;
+
+    // determines which sort to do and sorts
+    if (sort == "High to Low") {
+        // Converts the price string into a float by first stripping the string of all values besides numericals and decimals/commas
+        GLOBAL_LIST.sort((a, b) => (parseFloat(a['price'].replace(/[^0-9.,]/g, '')) < parseFloat(b['price'].replace(/[^0-9.,]/g, ''))) ? 1 : -1);
+    } else {
+        GLOBAL_LIST.sort((a, b) => (parseFloat(a['price'].replace(/[^0-9.,]/g, '')) > parseFloat(b['price'].replace(/[^0-9.,]/g, ''))) ? 1 : -1);
+    }
+    
+
+    GLOBAL_LIST.forEach(function(item, index, array) {
+
+        //this is HTML code that is reactively added to the page, your TODO solutions do not need this.
+        productListAdd = '<div class="col-sm-6 col-md-4 col-lg-3 mt-4" id="product'+item['id']+'">\n' +
+                '            <div class="card card-inverse card-info">\n' +
+                '                <img class="card-img-top" src="'+item['image']+'">\n' +
+                '                <div class="card-block">\n' +
+                '                    <h4><span class="badge badge-danger">'+item['price']+'</span></h4>\n' +
+                '                    <div class="meta card-text">\n' +
+                '                        <a style="color: deepskyblue">Category - Cell Phones</a>\n' +
+                '                    </div>\n' +
+                '                    <div class="card-text">\n' +
+                '                        '+item['title'].substring(0,50)+'... more\n' +
+                '                    </div>\n' +    
+                '                </div>\n' +
+                '                <div class="card-footer">\n' +
+                '                    <small>More information ...</small>\n' +
+                '                    <button class="btn btn-info float-right btn-sm" onclick="fetchOneProduct('+item['id']+')">Detail</button>\n' +
+                '                </div>\n' +
+                '                <div class="card-footer">\n' +
+                '                    <button class="btn btn-info float-right btn-sm" onclick="addToCart('+item['id']+')">Add to Cart</button>\n' +
+                '                </div>\n' +
+                '            </div>\n' +
+                '        </div>';
+            productList=productList+productListAdd;
+
+    });
+    $('#items').html(productList);
 }
 
 $('#exampleModal').on('show.bs.modal', function (event) {

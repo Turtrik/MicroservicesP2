@@ -66,6 +66,14 @@
                     <input class="form-control form-control-lg form-control-borderless" type="number"
                            placeholder="Max Price" id="max_price">
                 </div>
+                <div class="col sort-by-dropdown">
+                    <button class="btn btn-lg btn-success" style="height:48px;width:75px;" type="submit" onclick="sortItems()">Sort</button>
+                    <input type="text" name="sort-by" list="sorts" id="sort_type">     
+                    <datalist id="sorts">       
+                        <option value="High to Low">       
+                        <option value="Low to High">     
+                    </datalist>
+                </div>
                 <!--end of col-->
             </div>
         </div>
