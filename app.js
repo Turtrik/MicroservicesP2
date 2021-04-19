@@ -229,7 +229,7 @@ function toShoppingCart(){
 
 function sortItems(){
     let sort =$.trim($('#sort_type').val()); //gets which sort should be used
-    var productList;
+    var productList='';
 
     // determines which sort to do and sorts
     if (sort == "High to Low") {
